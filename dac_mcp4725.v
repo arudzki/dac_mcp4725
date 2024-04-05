@@ -19,7 +19,7 @@ parameter [7:0] low_byte = 8'b11111111; // low byte.   hi+low bytes set dac to m
 
 localparam [4:0]    POWERUP = 5'h00;
                     START   = 5'h01;
-
+                    START   = 5'h01;
 
 reg [4:0] r_state <= POWERUP;      // our state machine
 
