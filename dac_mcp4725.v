@@ -2,7 +2,7 @@ module dac_mcp4725 (
     input i_clk,
     input reset,
     output o_scl,
-    output o_sca
+    inout o_sca
 );
 
 reg [6:0] r_count = 7'b0;
@@ -19,7 +19,38 @@ parameter [7:0] low_byte = 8'b11111111; // low byte.   hi+low bytes set dac to m
 
 localparam [4:0]    POWERUP = 5'h00;
                     START   = 5'h01;
-                    START   = 5'h01;
+                    DACADR7 = 5'h02;
+                    DACADR6 = 5'h03;
+                    DACADR5 = 5'h04;
+                    DACADR4 = 5'h05;
+                    DACADR3 = 5'h06;
+                    DACADR2 = 5'h07;
+                    DACADR1 = 5'h08;
+                    DACADR0 = 5'h09;        // R/W bit
+                    REC_ACK = 5'h0A;
+                    SENDHI7 = 5'h0B;
+                    SENDHI6 = 5'h0C;
+                    SENDHI5 = 5'h0D;
+                    SENDHI4 = 5'h0E;
+                    SENDHI3 = 5'h0F;
+                    SENDHI2 = 5'h10;
+                    SENDHI1 = 5'h11;
+                    SENDHI0 = 5'h12;        // R/W bit
+                    REC_ACK = 5'h13;
+                    SENDLO7 = 5'h14;
+                    SENDLO6 = 5'h15;
+                    SENDLO5 = 5'h16;
+                    SENDLO4 = 5'h17;
+                    SENDLO3 = 5'h18;
+                    SENDLO2 = 5'h19;
+                    SENDLO1 = 5'h1A;
+                    SENDLO0 = 5'h1B;        // R/W bit
+                    REC_ACK = 5'h1C;
+
+
+
+
+
 
 reg [4:0] r_state <= POWERUP;      // our state machine
 
@@ -29,14 +60,14 @@ always @ (posedge i_clk or posedge reset) begin
             r_count <= 0;
         end
         else if (r_count == 124) begin
-				r_count <= 0;               //reset counter
-				r_sclk <= ~r_sclk;			// toggle slow clock 2.5uS tick (400KHz.  I2C clock is 100KHz)
+				r_count <= 7'b0;            //reset counter
+				r_sclk <= ~r_sclk;			// toggle slow clock 1uS tick (400KHz.  I2C clock is 100KHz)
 			end 
 		    else 
 				r_count <= r_count + 1;		// Keep counting
 end 
 
-assign o_scl = r_sclk;
+assign o_scl = r_sclk;                      // output I2C Clock
 
 always @ (posedge r_sclk or posedge reset) begin
         if (reset) begin
